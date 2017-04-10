@@ -28,9 +28,6 @@ var app = {
     $.ajax({
       url: 'http://parse.hrr23.hackreactor.com/chatterbox/classes/messages',
       type: 'POST',
-      headers: {
-        // 'X-Parse-Application-Id':
-      },
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(data) {
@@ -42,8 +39,28 @@ var app = {
     });
   },
   fetch: function() {
-
+    $.ajax({
+      type: 'GET',
+      data: JSON.stringify(message),
+      contentType: 'application/json',
+      success: function(data) {
+        console.log('success');
+      },
+      error: function(data) {
+        console.log(data, 'error');
+      }
+    });
+  },
+  clearMessages: function() {
+    $('#chats').html('');
+  },
+  renderMessage: function(message) {
+    $('#chats').append(`<p>${message.username} ${message.text}</p>`)
+  },
+  renderRoom: function(roomName) {
+    $('#roomSelect').append(`<div id="${roomName}">${roomName}</div>`)
   }
+
 };
 
   // $('.postmessage').on('click', function() {
