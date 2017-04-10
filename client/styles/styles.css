@@ -13,6 +13,9 @@ body {
     padding: 50px 60px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
+    height: 100vh;
+    position: absolute;
+    display: flex;
 }
 
 #main h1 {
@@ -86,5 +89,12 @@ form input[type=text] {
 .friend {
     color: #fff;
     background-color: #0090da;
+}
+
+#chats {
+  /*position: relative;*/
+  height: 100vh;
+  width: 50%;
+  flex-direction: column;
 }
 
