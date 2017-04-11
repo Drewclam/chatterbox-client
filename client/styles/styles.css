@@ -143,7 +143,7 @@ form input[type=text] {
 .username {
     display: inline;
     font-size: 23px;
-    font-style: bold;
+    /*font-style: bold;*/
 }
 .message {
     display: inline;
@@ -152,4 +152,9 @@ form input[type=text] {
 
 .hidden {
     display: none;
+}
+
+.friend {
+    font-style: underline bold;
+    color: #23ef00;
 }

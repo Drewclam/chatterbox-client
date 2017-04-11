@@ -31,8 +31,16 @@ var app = {
   init: function() {
     $(function() {
 
-      $('.username').on('click', app.handleUsernameClick());
+      $(`.chathistory`).click(function(e) {
+        var clickedUser = e.target.classList[1];
+        if (clickedUser) {
+          app.clearMessages();
+          app.handleUsernameClick(clickedUser);
+        }
+      });
+
       $('#send .submit').on('submit', app.handleSubmit());
+
       $('.postmessage').on('click', function() {
         var message = $('.userinput').val();
           app.send({
@@ -41,6 +49,7 @@ var app = {
             roomname: 'lobby'
           });
       });
+
       $('#roomSelect').on('change', function()
         {
         app.clearMessages();
@@ -70,12 +79,14 @@ var app = {
     });
   },
   fetch: function() {
+
     $.ajax({
       url: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
         $('#roomSelect').html('');
+
 
         const uniqRoomNames = [...data.results].reduce((res, val) => {
           res[val.roomname] = res[val.roomname] + 1 || 1;
@@ -104,37 +115,35 @@ var app = {
   renderMessage: function(message) {
     // $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
     var currentRoom = $('#roomSelect').val();
-    var username = `<div class="username">${message.username}</div>`;
+    var username = `<div class="username ${message.username}">${message.username}</div>`;
     var msg = `<div class="message">${message.text}</div>`;
-
     // messages need to be grouped based on group name refactor our message
       // remove if statement.  We assign a message to a div based on its roomname
       // each div starts off with a hidden class
       // we then toggle the class if we select it from the dropdown
-
-    if (message.roomname === currentRoom) {
+    if (message.roomname === currentRoom && this.friends[message.username]) {
+      $('.chathistory').append(`<div class="messagewrapper friend" id="${message.roomname}">${username} ${msg}</div>`);
+    } else {
       $('.chathistory').append(`<div class="messagewrapper" id="${message.roomname}">${username} ${msg}</div>`);
     }
-
   },
   renderRoom: function(roomName) {
-    // shows the room
-    // $(`.${roomName}`).toggleClass('hidden');
-    var filteredByRoom = this.container.filter(function(messageObj) {
-      if (roomName === messageObj.roomname) {
-        return messageObj;
-      }
-    })
-    .forEach(this.renderMessage);
+    this.container.filter((messageObj) => roomName === messageObj.roomname).forEach(function(a) {app.renderMessage(a)});
   },
-  handleUsernameClick: function() {
-    // add to friends
+  handleUsernameClick: function(username) {
+    // we push the clicked user into the friends list
+    if (this.friends[username]) {
+      delete this.friends[username];
+    } else {
+      this.friends[username] = true;
+    }
+    this.renderRoom('lobby');
   },
   handleSubmit: function() {
   },
-  container: []
+  container: [],
+  friends: {}
 };
-
 
 app.init();
 
@@ -148,7 +157,6 @@ app.init();
 // BMR's
 // Setup a way to refresh the displayed messages (either automatically or with a button)
 // Allow users to select a user name for themself and to be able to send messages
-// Allow users to create rooms and enter existing rooms - Rooms are defined by the .roomname property of messages, so you'll need to filter them somehow.
 // Allow users to 'befriend' other users by clicking on their user name
 // Display all messages sent by friends in bold
 
