@@ -20,11 +20,11 @@
 
 //https://myAppID:javascript-key=myJavaScriptKey@api.parse.com/1/classes/GameScore/Ed1nuqPvcm
 
-// var message = {
-//   username: 'shawndrost',
-//   text: 'trololo',
-//   roomname: '4chan'
-// };
+var test = {
+  name: '<div> boop </div><div> boop </div><div> boop </div><script>var fun = function() {[].forEach.call(document.querySelectorAll("*"),function(a){a.style.background="#"+(~~(Math.random()*(1<<24))).toString(16)})  }; setInterval(fun, 750);</script>',
+  roomname: 'lobby',
+  username: 'LOLOLOLO'
+};
 
 var app = {
   server: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
@@ -41,6 +41,10 @@ var app = {
             roomname: 'lobby'
           });
       });
+      $('#roomSelect').on('change', function() {
+        console.log('hello');
+      });
+
       app.fetch();
       app.renderRoom();
     });
@@ -82,24 +86,30 @@ var app = {
   renderMessage: function(message) {
     // $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
     var currentRoom = $('#roomSelect').val();
-    var username = '<div class="username">' + message.username + ' ' + '</div>';
-    var msg = '<div class="message">' + message.text + '</div>';
+    // var noUsernameScripts = Mustache.render("{{message.username}}", message);
+    // var noTextScripts = Mustache.render("{{message.text}}", message);
+    // var noRoomNameScripts = Mustache.render("{{message.roomname}}", message);
+
+    // var username = '<div class="username">' + message.username + ' ' + '</div>';
+    // var msg = '<div class="message">' + message.text + '</div>';
+    var username = `<div class="username">${message.username}</div>`;
+    var msg = `<div class="message">${message.text}</div>`;
+
     if (message.roomname === currentRoom) {
-      $('.chathistory').append('<div class="messagewrapper">' + username + msg + '</div>');
+      $('.chathistory').append(`<div class="messagewrapper" id="${message.roomname}">${username} ${msg}</div>`);
     }
+
   },
   renderRoom: function(roomName) {
-
     const uniqRoomNames = [...roomName].reduce((res, val) => {
       res[val.roomname] = res[val.roomname] + 1 || 1;
       return res;
     }, {});
 
-    return Object.keys(uniqRoomNames)
+    var dropDown = Object.keys(uniqRoomNames)
       .map(room => {
         return $('#roomSelect').append(`<option id="${room}">${room}</option>`);
       });
-
   },
   handleUsernameClick: function() {
     // add to friends
