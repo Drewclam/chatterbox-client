@@ -42,11 +42,15 @@ var app = {
           });
       });
       $('#roomSelect').on('change', function() {
-        console.log('hello');
+        // grab the changed room
+        var changedRoom = $('#roomSelect').val();
+        // invoke renderRoom to show the room
+        app.renderRoom(changedRoom);
+        // hide the current room
       });
 
       app.fetch();
-      app.renderRoom();
+
     });
   },
   send: function(message) {
@@ -69,11 +73,20 @@ var app = {
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
-        app.renderRoom(data.results);
+        const uniqRoomNames = [...data.results].reduce((res, val) => {
+          res[val.roomname] = res[val.roomname] + 1 || 1;
+          return res;
+        }, {});
+        var dropDown = Object.keys(uniqRoomNames)
+          .map(room => {
+          return $('#roomSelect').append(`<option id="${room}">${room}</option>`);
+        });
+
 
         [...data.results].map(result => {
           app.renderMessage(result);
         });
+
       },
       error: function(data) {
         console.log(data, 'error');
@@ -86,14 +99,13 @@ var app = {
   renderMessage: function(message) {
     // $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
     var currentRoom = $('#roomSelect').val();
-    // var noUsernameScripts = Mustache.render("{{message.username}}", message);
-    // var noTextScripts = Mustache.render("{{message.text}}", message);
-    // var noRoomNameScripts = Mustache.render("{{message.roomname}}", message);
-
-    // var username = '<div class="username">' + message.username + ' ' + '</div>';
-    // var msg = '<div class="message">' + message.text + '</div>';
     var username = `<div class="username">${message.username}</div>`;
     var msg = `<div class="message">${message.text}</div>`;
+
+    // messages need to be grouped based on group name refactor our message
+      // remove if statement.  We assign a message to a div based on its roomname
+      // each div starts off with a hidden class
+      // we then toggle the class if we select it from the dropdown
 
     if (message.roomname === currentRoom) {
       $('.chathistory').append(`<div class="messagewrapper" id="${message.roomname}">${username} ${msg}</div>`);
@@ -101,15 +113,9 @@ var app = {
 
   },
   renderRoom: function(roomName) {
-    const uniqRoomNames = [...roomName].reduce((res, val) => {
-      res[val.roomname] = res[val.roomname] + 1 || 1;
-      return res;
-    }, {});
-
-    var dropDown = Object.keys(uniqRoomNames)
-      .map(room => {
-        return $('#roomSelect').append(`<option id="${room}">${room}</option>`);
-      });
+    // shows the room
+    $(`.${roomName}`).toggleClass('hidden');
+    // toggle the hidden class on the div with id = roomName
   },
   handleUsernameClick: function() {
     // add to friends
