@@ -41,7 +41,9 @@ var app = {
             roomname: 'lobby'
           });
       });
-      $('#roomSelect').on('change', function() {
+      $('#roomSelect').on('change', function()
+        {
+        app.clearMessages();
         // grab the changed room
         var changedRoom = $('#roomSelect').val();
         // invoke renderRoom to show the room
@@ -68,24 +70,27 @@ var app = {
     });
   },
   fetch: function() {
-    var serverMessages = $.ajax({
+    $.ajax({
       url: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
+        $('#roomSelect').html('');
+
         const uniqRoomNames = [...data.results].reduce((res, val) => {
           res[val.roomname] = res[val.roomname] + 1 || 1;
           return res;
         }, {});
-        var dropDown = Object.keys(uniqRoomNames)
+
+        Object.keys(uniqRoomNames)
           .map(room => {
           return $('#roomSelect').append(`<option id="${room}">${room}</option>`);
         });
 
-
         [...data.results].map(result => {
           app.renderMessage(result);
         });
+        app.container = [...data.results];
 
       },
       error: function(data) {
@@ -94,7 +99,7 @@ var app = {
     });
   },
   clearMessages: function() {
-    $('#chats').html('');
+    $('.chathistory').html('');
   },
   renderMessage: function(message) {
     // $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
@@ -114,17 +119,40 @@ var app = {
   },
   renderRoom: function(roomName) {
     // shows the room
-    $(`.${roomName}`).toggleClass('hidden');
-    // toggle the hidden class on the div with id = roomName
+    // $(`.${roomName}`).toggleClass('hidden');
+    var filteredByRoom = this.container.filter(function(messageObj) {
+      if (roomName === messageObj.roomname) {
+        return messageObj;
+      }
+    })
+    .forEach(this.renderMessage);
   },
   handleUsernameClick: function() {
     // add to friends
   },
   handleSubmit: function() {
-  }
+  },
+  container: []
 };
 
 
 app.init();
+
+
+    ////
+    // !!!!!!!!!!!!!!!!OOOOOOOOR!!!!!!!!!!!! we can clear all messages whenever we change rooms by emptying the div .chathistory
+    // then filter the fetch objects by current room name
+    // renderRoom() then redraws .chathistory but populated by the filtered objects
+    // also need to have fetching occuring on a settimeout to constantly receive the newest data ????
+    /////
+// BMR's
+// Setup a way to refresh the displayed messages (either automatically or with a button)
+// Allow users to select a user name for themself and to be able to send messages
+// Allow users to create rooms and enter existing rooms - Rooms are defined by the .roomname property of messages, so you'll need to filter them somehow.
+// Allow users to 'befriend' other users by clicking on their user name
+// Display all messages sent by friends in bold
+
+
+
 
 
