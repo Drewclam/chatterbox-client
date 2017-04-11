@@ -15,6 +15,21 @@ body {
     border-width: 0 1px 1px 1px;
 }
 
+#main {
+    position: relative;
+    height: 50em;
+    width: 50em;
+}
+
+#chats {
+    position: absolute;
+    border: solid black;
+    left: 0;
+    top: 9em;
+    height: 50%;
+    width: 49.93em;
+}
+
 #main h1 {
     margin-top: 0;
     font-size: 35px;
@@ -88,4 +103,17 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.postmessage {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
 
+.chathistory {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50%;
+    width: 100%;
+    background-color: pink;
+}

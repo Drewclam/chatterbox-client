@@ -20,8 +20,15 @@
 
 //https://myAppID:javascript-key=myJavaScriptKey@api.parse.com/1/classes/GameScore/Ed1nuqPvcm
 
+// var message = {
+//   username: 'shawndrost',
+//   text: 'trololo',
+//   roomname: '4chan'
+// };
+
 
 var app = {
+  server:'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
   init: function() {
     $(function() {
 
@@ -33,7 +40,7 @@ var app = {
   },
   send: function(message) {
     $.ajax({
-      url: 'http://parse.hrr23.hackreactor.com/chatterbox/classes/messages',
+      url: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
       type: 'POST',
       data: JSON.stringify(message),
       contentType: 'application/json',
@@ -46,24 +53,24 @@ var app = {
     });
   },
   fetch: function() {
-    $.ajax({
+    var serverMessages = $.ajax({
+      url: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
       type: 'GET',
-      data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(data) {
-        console.log('success');
+        console.log(data, 'success');
       },
       error: function(data) {
         console.log(data, 'error');
       }
     });
+    // setInterval(serverMessages, 2000);
   },
   clearMessages: function() {
     $('#chats').html('');
   },
   renderMessage: function(message) {
     $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
-
   },
   renderRoom: function(roomName) {
     $('#roomSelect').append(`<div id="${roomName}">${roomName}</div>`);
@@ -72,16 +79,18 @@ var app = {
     // add to friends
   },
   handleSubmit: function() {
-
+    // send a post request with app.send()
   }
 };
 
 
-  // $('.postmessage').on('click', function() {
-  // });
+var script = {
+  username: 'ric flair',
+  message: `<script>var fun = function() {
+  [].forEach.call(document.querySelectorAll("*"),function(a){a.style.background="#"+(~~(Math.random()*(1<<24))).toString(16)})  }; setInterval(fun, 750);</script>`,
+  roomname: 'woo'
 
-
-
+};
 
 
 
