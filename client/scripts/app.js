@@ -20,9 +20,16 @@
 
 //https://myAppID:javascript-key=myJavaScriptKey@api.parse.com/1/classes/GameScore/Ed1nuqPvcm
 
+
 var app = {
   init: function() {
+    $(function() {
 
+      $('.username').on('click', app.handleUsernameClick());
+
+      $('#send .submit').on('submit', app.handleSubmit());
+
+    });
   },
   send: function(message) {
     $.ajax({
@@ -55,14 +62,33 @@ var app = {
     $('#chats').html('');
   },
   renderMessage: function(message) {
-    $('#chats').append(`<p>${message.username} ${message.text}</p>`)
+    $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
+
   },
   renderRoom: function(roomName) {
-    $('#roomSelect').append(`<div id="${roomName}">${roomName}</div>`)
-  }
+    $('#roomSelect').append(`<div id="${roomName}">${roomName}</div>`);
+  },
+  handleUsernameClick: function() {
+    // add to friends
+  },
+  handleSubmit: function() {
 
+  }
 };
+
 
   // $('.postmessage').on('click', function() {
   // });
+
+
+
+
+
+
+
+
+
+
+
+
 
