@@ -26,9 +26,8 @@
 //   roomname: '4chan'
 // };
 
-
 var app = {
-  server:'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
+  server: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
   init: function() {
     $(function() {
 
@@ -38,10 +37,12 @@ var app = {
         var message = $('.userinput').val();
           app.send({
             username: 'magpie',
-            text: message
+            text: message,
+            roomname: 'lobby'
           });
       });
       app.fetch();
+      app.renderRoom();
     });
   },
   send: function(message) {
@@ -51,7 +52,7 @@ var app = {
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(data) {
-        console.log('success');
+        console.log(data, 'success');
       },
       error: function(data) {
         console.log(data, 'error');
@@ -64,7 +65,8 @@ var app = {
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
-        console.log(data);
+        app.renderRoom(data.results);
+
         [...data.results].map(result => {
           app.renderMessage(result);
         });
@@ -79,12 +81,25 @@ var app = {
   },
   renderMessage: function(message) {
     // $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
+    var currentRoom = $('#roomSelect').val();
     var username = '<div class="username">' + message.username + ' ' + '</div>';
     var msg = '<div class="message">' + message.text + '</div>';
-    $('.chathistory').append('<div class="messagewrapper">' + username + msg + '</div>');
+    if (message.roomname === currentRoom) {
+      $('.chathistory').append('<div class="messagewrapper">' + username + msg + '</div>');
+    }
   },
   renderRoom: function(roomName) {
-    $('#roomSelect').append(`<div id="${roomName}">${roomName}</div>`);
+
+    const uniqRoomNames = [...roomName].reduce((res, val) => {
+      res[val.roomname] = res[val.roomname] + 1 || 1;
+      return res;
+    }, {});
+
+    return Object.keys(uniqRoomNames)
+      .map(room => {
+        return $('#roomSelect').append(`<option id="${room}">${room}</option>`);
+      });
+
   },
   handleUsernameClick: function() {
     // add to friends
