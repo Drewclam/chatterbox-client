@@ -27,15 +27,20 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
+      <div class="myName">
+        <h2>Welcome<span> INSERT_USERNAME</span>!</h2>
+        <div class="changeName">
+          <!-- <span>Change your Username!</span> -->
+          <button class="changeNameBtn">CHANGE_USERNAME</button>
+        </div>
+      </div>
       <div id="rooms">
         Room:
         <select id="roomSelect"></select>
         <button class="roombutton">CREATE_A_ROOM</button>
       </div>
       <div id="chats">
-        <div class="chathistory">
-          CHAT_HISTORY
-        </div>
+        <div class="chathistory"></div>
         <button class="postmessage">POST A MESSAGE</button>
         <textarea class="userinput">USER_INPUT</textarea>
       </div>
