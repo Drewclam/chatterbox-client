@@ -33,9 +33,15 @@ var app = {
     $(function() {
 
       $('.username').on('click', app.handleUsernameClick());
-
       $('#send .submit').on('submit', app.handleSubmit());
-
+      $('.postmessage').on('click', function() {
+        var message = $('.userinput').val();
+          app.send({
+            username: 'magpie',
+            text: message
+          });
+      });
+      app.fetch();
     });
   },
   send: function(message) {
@@ -58,19 +64,24 @@ var app = {
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
-        console.log(data, 'success');
+        console.log(data);
+        [...data.results].map(result => {
+          app.renderMessage(result);
+        });
       },
       error: function(data) {
         console.log(data, 'error');
       }
     });
-    // setInterval(serverMessages, 2000);
   },
   clearMessages: function() {
     $('#chats').html('');
   },
   renderMessage: function(message) {
-    $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
+    // $('#chats').append(`<div class="username">${message.username} ${message.text}</div>`);
+    var username = '<div class="username">' + message.username + ' ' + '</div>';
+    var msg = '<div class="message">' + message.text + '</div>';
+    $('.chathistory').append('<div class="messagewrapper">' + username + msg + '</div>');
   },
   renderRoom: function(roomName) {
     $('#roomSelect').append(`<div id="${roomName}">${roomName}</div>`);
@@ -79,25 +90,10 @@ var app = {
     // add to friends
   },
   handleSubmit: function() {
-    // send a post request with app.send()
   }
 };
 
 
-var script = {
-  username: 'ric flair',
-  message: `<script>var fun = function() {
-  [].forEach.call(document.querySelectorAll("*"),function(a){a.style.background="#"+(~~(Math.random()*(1<<24))).toString(16)})  }; setInterval(fun, 750);</script>`,
-  roomname: 'woo'
-
-};
-
-
-
-
-
-
-
-
+app.init();
 
 

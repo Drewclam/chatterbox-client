@@ -1,5 +1,6 @@
 body {
-    background: #eee;
+    /*background: #eee;*/
+    background-image: url('https://media3.giphy.com/media/yUI3a7RwLhOFy/giphy.gif');
     text-align: center;
     padding: 0 25px;
     font-family: arial, sans-serif;
@@ -113,7 +114,38 @@ form input[type=text] {
     position: absolute;
     top: 0;
     left: 0;
-    height: 50%;
+    height: 75%;
     width: 100%;
     background-color: pink;
+    border: solid #fc62f2;
+    overflow: scroll;
+}
+
+.userinput {
+    position: absolute;
+    bottom: 0;
+    right: 10em;
+    height: 23%;
+    width: 80%;
+    outline: none;
+    resize: none;
+    border: dashed #99e224;
+    font-size: 18px;
+    font-family: "Comic Sans MS";
+}
+
+.messagewrapper {
+    background-color: white;
+    padding: 1em;
+    height: 1px;
+}
+
+.username {
+    display: inline;
+    font-size: 23px;
+    font-style: bold;
+}
+.message {
+    display: inline;
+    font-size: 16px;
 }
