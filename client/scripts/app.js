@@ -8,16 +8,24 @@ var app = {
   server: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
   init: function() {
     $(function() {
-
       $(`.chathistory`).click(function(e) {
+        // if (e.target.classList[1]) {
+        //   for (var i = 0; i < e.target.classList[1].length; i++) {
+        //     if (e.target.classList[1].charAt(i) === '\'' || e.target.classList[1].charAt(i) === '\"') {
+        //       e.target.classList[1].charAt(i) = '';
+        //     }
+        //   }
+        // }
         var clickedUser = e.target.classList[1];
+
         if (clickedUser) {
+          console.log('you clicked on the username: ' , clickedUser);
           app.clearMessages();
+          app.fetch();
           app.handleUsernameClick(clickedUser);
         }
       });
 
-      $('#send .submit').on('submit', app.handleSubmit());
 
       $('.postmessage').on('click', function() {
         app.handleSubmit();
@@ -26,6 +34,7 @@ var app = {
       $('#roomSelect').on('change', function() {
         app.clearMessages();
         var changedRoom = `${$('#roomSelect').val()}`;
+        app.currentChatRoom = `${$('#roomSelect').val()}`;
         app.renderRoom(changedRoom);
       });
 
@@ -72,11 +81,11 @@ var app = {
       success: function(data) {
         `${$('#roomSelect').html('')}`;
 
-
         const uniqRoomNames = [...data.results].reduce((res, val) => {
           res[val.roomname] = res[val.roomname] + 1 || 1;
           return res;
         }, {});
+
 
         Object.keys(uniqRoomNames)
           .map(room => {
@@ -86,6 +95,7 @@ var app = {
         [...data.results].map(result => {
           app.renderMessage(result);
         });
+
         app.container = [...data.results];
 
       },
@@ -95,17 +105,17 @@ var app = {
     });
   },
   clearMessages: function() {
-    `${$('.chathistory').html('')}`;
+    $('.chathistory').html('');
   },
   renderMessage: function(message) {
-    var currentRoom = `${$('#roomSelect').val()}`;
-    var username = `<div class="username ${message.username}">${message.username}</div>`;
-    var msg = `<div class="message ${message}">${message.text}</div>`;
+    var username = `<div class="username ${message.username}">` + `${message.username}` + `</div>`;
+    var msg = `<div class="message">` + encodeURI(message.text) + `</div>`;
+    var roomname = `${message.roomname}`;
 
-    if (message.roomname === currentRoom && this.friends[message.username]) {
-      $('.chathistory').append(`<div class="messagewrapper friend" id="${message.roomname}">${username}: ${msg}</div>`);
+    if (roomname === app.currentChatRoom && this.friends[message.username]) {
+      $('.chathistory').append(`<div class="messagewrapper friend" id="${roomname}">${username}: ${msg}</div>`);
     } else {
-      $('.chathistory').append(`<div class="messagewrapper" id="${message.roomname}">${username}: ${msg}</div>`);
+      $('.chathistory').append(`<div class="messagewrapper" id="${roomname}">${username}: ${msg}</div>`);
     }
   },
   renderRoom: function(roomName) {
@@ -117,24 +127,20 @@ var app = {
     } else {
       this.friends[username] = true;
     }
-    `${this.renderRoom('lobby')}`;
+    this.renderRoom(app.currentChatRoom);
   },
   handleSubmit: function() {
-    var message = `${$('.userinput').val()}`;
-    var backticked = `${message}`;
-    `${app.send({
-      username: 'magpie',
-      text: backticked,
-      roomname: 'lobby'
-    })}`;
-    `${$('.userinput').val('')}`;
+    var sendThis = {};
+    sendThis.username = encodeURI(window.location.search.split('').slice(10, this.length).join(''));
+    sendThis.text = encodeURI($('.userinput').val());
+    sendThis.roomname = encodeURI($('option').val());
+    this.send(sendThis);
   },
   container: [],
-  friends: {}
+  friends: {},
+  currentChatRoom: 'lobby'
 };
 
 app.init();
 
-`${setInterval(app.fetch, 30000)}`;
-
-
+setInterval(app.fetch, 2000);

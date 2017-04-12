@@ -6,7 +6,7 @@ body {
     font-family: arial, sans-serif;
 }
 
-#main, #chats {
+#main, #hats {
     width: 500px;
     margin: auto;
     text-align: left;
@@ -18,15 +18,15 @@ body {
 
 #main {
     position: relative;
-    height: 50em;
+    height: 35em;
     width: 50em;
 }
 
-#chats {
+#hats {
     position: absolute;
     border: solid black;
     left: 0;
-    top: 9em;
+    top: 10em;
     height: 50%;
     width: 49.93em;
 }
